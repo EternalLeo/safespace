@@ -5,11 +5,11 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.secret_key = getenv("SECRET_KEY")
-app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URL_AUTH")
-db_auth = SQLAlchemy(app)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URL")
-db_content = SQLAlchemy(app)
+app.config['SQLALCHEMY_BINDS'] = {
+    'auth': getenv("DATABASE_URL_AUTH")
+}
 db = SQLAlchemy(app)
 
 pepper = getenv("DATABASE_PEPPER")
