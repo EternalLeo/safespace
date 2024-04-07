@@ -20,6 +20,11 @@ Requirements:
 - compatible python version (latest)
 - postgresql
 
+### There is currently no reason to clone the repo!
+### It has the landing page, of which there is a screenshot above.
+### You can spy at the code straight from github.
+### (if this changes, the readme will be updated)
+
 Clone the repository, run
   ```terminal
   cd repo
@@ -59,3 +64,24 @@ To implement...
 - Frontend and backend functionality to-do.
 - Versioning
 - Full encryption of all media
+
+🔲 Database schema mostly done\
+🔲 Lots of time spent on graphics design and beautiful introduction page\
+🔲 Boilerplate for follow-up logic\
+⬛ Working registration + log-in\
+⬛ App page with 3 tabs:\
+⬛ Feed\
+⬛ Messages\
+⬛ Profile
+
+It would be accurate to say this is only 20% done.\
+I've spent spent a lot of the time thinking out the logic.\
+I am planning to use this for myself on my own server so I will continue development. (If I'm making something, might as well make something useful)\
+For now, in the next month, the goals are:
+- Encryption can wait
+as fun as thinking out the specifics of sharing encrypted media with key exchanges is... 
+- Posting on a global feed
+included a search function with simple search parameters (username, date, title, content, media attached)
+- Direct messages chat
+- Invite people into a group chat
+- The profile tab only contains your bio and your public post history, maybe I'll make more customization but that's a later extra
