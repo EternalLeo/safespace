@@ -3,11 +3,17 @@
 # Safespace
 A Python Flask and Postgresql social media site to share p2p encrypted media
 
+<img src="https://github.com/EternalLeo/safespace/blob/main/static/safelogo.png" alt="cat in box logo" width="200"/>
+
+### What is this?
+
+Safespace is a social media site to post publicly or share encrypted media,\
+audio, video, images, text, with your friends.\
+<br>
+
+<img src="https://github.com/EternalLeo/safespace/blob/main/static/preview.png" alt="drawing" width="600"/>
 </div>
-
-- What is this?
-
-Safespace is a social media site to post publicly or share encrypted media, audio, video, images, text, with your friends.
+<br>
 
 ## Installation
 Requirements:
