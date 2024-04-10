@@ -3,10 +3,9 @@
 <head>
     <title>Safespace - be yourself</title>
     <meta charset="UTF-8">
-    <meta name="keywords" content="vastu, opintokalenteri, kurssit, luennot, HY, Helsingin Yliopisto">
+    <meta name="keywords" content="safespace, social media, encrypted, privacy">
     <meta name="author" content="Leo Pasanen">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="flowers.css">
     <link rel="icon" href="{{ url_for('static', filename='safelogo.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='safecss.css') }}">
 </head>
@@ -17,9 +16,23 @@
         <p>SafeSpace is a social media site where you can post publicly or share encrypted media with your friends.</p>
         <p> Your privacy is our priority.</p>
         <div class="buttons">
-            <a href="/login" class="btn">Log In</a>
-            <a href="/signup" class="btn">Sign Up</a>
+            <button onclick="fadeShrink()">Log In</button>
+            <button onclick="fadeShrink()">Sign Up</button>
         </div>
     </div>
+    <div class="popup hidden">
+        <form id="form">
+            <button id="back-button" onclick="backButton(event)">Back</button>
+            <input type="text" id="username" placeholder="Username" autocomplete="username">
+            <input type="password" id="password" placeholder="Password" autocomplete="current-password">
+            <button id="join-button">Join!</button>
+        </form>
+        <div id="formdeco">
+            <img src="{{ url_for('static', filename='safelogo.png') }}" alt="SafeSpace Logo">
+            <p id="popup-text">Log-in</p>
+        </div>
+    </div>
+
+<script src="{{ url_for('static', filename='safejs.js') }}"></script>
 </body>
 </html>

@@ -25,19 +25,25 @@ Requirements:
 ### You can spy at the code straight from github.
 ### (if this changes, the readme will be updated)
 
+>Remember!\
+>Secure password for the safeauth role, it is responsible for user credentials.\
+>Secure sequences for the pepper and secret key as well.
+<br>
+
 Clone the repository, run
   ```terminal
   cd repo
   pip install -r requirements.txt
-  psql -U user -d safeauth -a -f authtable.sql
+  psql -U user -c "CREATE DATABASE safedb;"
+  psql -U user -d safedb -c "CREATE ROLE safeauth WITH LOGIN PASSWORD 'password';"
   psql -U user -d safedb -a -f schema.sql
   ```
 
 Now you're almost set!
 Specify the following environment variables:
   ```terminal
-  DATABASE_URL=postgresql://user:pass@localhost:5432/safeauth
-  DATABASE_URL_AUTH=postgresql://user:pass@localhost:5432/safedb
+  DATABASE_URL=postgresql://user:pass@localhost:5432/safedb
+  DATABASE_URL_AUTH=postgresql://safeauth:pass@localhost:5432/safedb
   DATABASE_PEPPER=secretstring
   SECRET_KEY=secretstring
   ```

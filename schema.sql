@@ -1,6 +1,6 @@
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    username TEXT,
+    username TEXT UNIQUE,
     permission INTEGER,
     displayname TEXT,
     bio TEXT,
@@ -8,6 +8,17 @@ CREATE TABLE users (
     pfp BYTEA,
     created_at TIMESTAMP
 );
+
+CREATE TABLE userauth (
+    id SERIAL PRIMARY KEY,
+    username TEXT REFERENCES users(username), 
+    passhash TEXT,
+    publickey TEXT,
+    privatekey TEXT
+);
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON userauth TO safedbauth;
+ALTER TABLE userauth OWNER TO safedbauth;
 
 CREATE TABLE media (
     id SERIAL PRIMARY KEY,
@@ -27,6 +38,14 @@ CREATE TABLE group_members (
     group_id INTEGER REFERENCES groups(id),
     user_id INTEGER REFERENCES users(id),
     joined_at TIMESTAMP
+);
+
+CREATE TABLE group_invites (
+    id SERIAL PRIMARY KEY,
+    group_id INTEGER REFERENCES groups(id),
+    invited_id INTEGER REFERENCES users(id),
+    inviter_id INTEGER REFERENCES users(id),
+    sent_at TIMESTAMP
 );
 
 CREATE TABLE posts (
