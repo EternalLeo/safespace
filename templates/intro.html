@@ -16,15 +16,16 @@
         <p>SafeSpace is a social media site where you can post publicly or share encrypted media with your friends.</p>
         <p> Your privacy is our priority.</p>
         <div class="buttons">
-            <button onclick="fadeShrink()">Log In</button>
-            <button onclick="fadeShrink()">Sign Up</button>
+            <button onclick="fadeShrink(1)">Log In</button>
+            <button onclick="fadeShrink(2)">Sign Up</button>
         </div>
     </div>
     <div class="popup hidden">
-        <form id="form">
+        <form id="form" method="POST">
             <button id="back-button" onclick="backButton(event)">Back</button>
             <input type="text" id="username" placeholder="Username" autocomplete="username">
             <input type="password" id="password" placeholder="Password" autocomplete="current-password">
+            <input type="hidden" id="action" name="action">
             <button id="join-button">Join!</button>
         </form>
         <div id="formdeco">

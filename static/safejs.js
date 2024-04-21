@@ -6,10 +6,20 @@ function delayframe() {
     return new Promise(resolve => requestAnimationFrame(resolve));
 }
 
-async function fadeShrink() {
+async function fadeShrink(buttonid) {
+    // Text change + form action
+    var popupText = document.getElementById('popup-text');
+    var action = document.getElementById('action');
+    if (buttonid==1){
+        popupText.textContent = 'Log-in';
+        action.value = 'login';
+    } else if (buttonid==2){
+        popupText.textContent = 'Sign-up';
+        action.value = 'signup';
+    }
     let container = document.getElementsByClassName('container')[0];
     let popup = document.getElementsByClassName('popup')[0];
-
+    // Awful css-js magic to make the animations work
     container.classList.remove('fadein');
     container.classList.add('fadeout');
     await delay(500);
