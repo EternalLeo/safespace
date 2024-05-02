@@ -23,10 +23,11 @@
     <div class="popup hidden">
         <form id="form" method="POST">
             <button id="back-button" onclick="backButton(event)">Back</button>
-            <input type="text" id="username" placeholder="Username" autocomplete="username">
-            <input type="password" id="password" placeholder="Password" autocomplete="current-password">
+            <input type="text" id="username" name="username" placeholder="Username" autocomplete="username">
+            <input type="password" id="password" name="password" placeholder="Password" autocomplete="current-password">
             <input type="hidden" id="action" name="action">
             <button id="join-button">Join!</button>
+            <p id="result-text"></p>
         </form>
         <div id="formdeco">
             <img src="{{ url_for('static', filename='safelogo.png') }}" alt="SafeSpace Logo">

@@ -1,7 +1,7 @@
 # Scripting files
-.cmd
-.bat
-.sh
+*.cmd
+*.bat
+*.sh
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

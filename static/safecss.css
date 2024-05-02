@@ -63,6 +63,9 @@ p {
     order: 3;
 }
 
+#result-text {
+    margin-bottom: 2px;
+}
 
 /* Button Styling */
 
@@ -192,6 +195,11 @@ p {
     #join-button {
         order: 5;
         height: 45px
+    }
+
+    #result-text {
+        order: 6;
+        margin-bottom: 2px;
     }
 }
 

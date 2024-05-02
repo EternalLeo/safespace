@@ -36,7 +36,7 @@ async function fadeShrink(buttonid) {
 }
 
 async function backButton(event) {
-    event.preventDefault();
+    event.preventDefault(); // Act as a back button
 
     let container = document.getElementsByClassName('container')[0];
     let popup = document.getElementsByClassName('popup')[0];
@@ -54,4 +54,44 @@ async function backButton(event) {
     await delayframe();
     container.classList.remove('fadeout');
     container.classList.add('fadein');
+
+    // Clear the input fields if back button pressed
+    document.getElementById('username').value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('result-text').textContent = '';
 }
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById('form');
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent form submission to submit on our own terms
+
+        var formData = new FormData(form); // Get form data
+        var action = formData.get('action');
+
+        fetch('/', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                document.getElementById('result-text').style.color = 'rgb(216, 68, 68)';
+                document.getElementById('result-text').textContent = data.error;
+            } else {
+                if (action == 'signup') {
+                    document.getElementById('result-text').style.color = 'rgb(30, 150, 25)';
+                    document.getElementById('result-text').textContent = data.message;
+                } else {
+                    // Login
+                    window.location.href = '/success';
+                }
+                
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    });
+});

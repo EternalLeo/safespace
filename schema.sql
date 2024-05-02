@@ -20,14 +20,20 @@ CREATE TABLE userauth (
     privatekey TEXT
 );
 
-GRANT SELECT, INSERT, UPDATE, DELETE ON userauth TO safedbauth;
-ALTER TABLE userauth OWNER TO safedbauth;
+GRANT SELECT, INSERT, UPDATE, DELETE ON userauth TO safeauth;
+ALTER TABLE userauth OWNER TO safeauth;
 
 -- All  media 
 CREATE TABLE media (
     id SERIAL PRIMARY KEY,
     media_type TEXT, -- image, video, ...  (maybe in the future) -> html, code, text... - default to download
     media_data BYTEA,
+    created_at TIMESTAMP
+);
+
+CREATE TABLE groups (
+    id SERIAL PRIMARY KEY,
+    groupname TEXT,
     created_at TIMESTAMP
 );
 
@@ -53,14 +59,14 @@ CREATE TABLE content_media (
 CREATE TABLE content_group (
     id SERIAL PRIMARY KEY,
     content_id INTEGER REFERENCES content(id),
-    user_id INTEGER REFERENCES users(id), -- user who can see the content
+    user_id INTEGER REFERENCES users(id) -- user who can see the content
 );
 
 -- only currently intended available for posts and replies
 CREATE TABLE content_likes (
     id SERIAL PRIMARY KEY,
     content_id INTEGER REFERENCES content(id),
-    liker_id INTEGER REFERENCES users(id),
+    liker_id INTEGER REFERENCES users(id)
 );
 
 -- only currently intended available for posts and replies
@@ -72,11 +78,7 @@ CREATE TABLE content_reports (
     created_at TIMESTAMP
 );
 
-CREATE TABLE groups (
-    id SERIAL PRIMARY KEY,
-    groupname TEXT,
-    created_at TIMESTAMP
-);
+
 
 CREATE TABLE group_members (
     id SERIAL PRIMARY KEY,
