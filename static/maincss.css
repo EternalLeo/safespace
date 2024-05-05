@@ -1,0 +1,67 @@
+/* Global Styles */
+
+@font-face {
+    font-family: 'Nunito';
+    src: url('/static/Nunito-Regular.ttf');
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background: #000;
+    overflow: hidden;
+    font-family: 'Nunito', sans-serif;
+    background: url('/static/galaxy.jpg');
+    background-size: cover;
+    background-attachment: scroll;
+}
+
+/* Layout and positioning */
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: #fff;
+    border-radius: 0 0 15px 15px;
+    padding: 10px 0;
+    height: 8%;
+    width: 50%;
+    margin: auto;
+    display: flex;
+    justify-content: space-around;
+}
+
+/* Element Styling */
+
+header a img {
+    height: 70%;
+    margin-top: 2%;
+    padding: 10px;
+    border-radius: 20%;
+}
+
+header a img:hover {
+    background-color: rgb(255, 211, 205);
+}
+
+/* Mobile support */
+
+@media (orientation: portrait) {
+    header {
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+        top: auto;
+        border-radius: 0;
+    }
+    
+    #extralogo {
+        display: none;
+    }
+}
+
+/* -- Animations -- */
+
+/* background */

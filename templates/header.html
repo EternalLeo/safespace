@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Safespace - {% block title %}{% endblock %}</title>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="safespace, social media, encrypted, privacy">
+    <meta name="author" content="Leo Pasanen">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ url_for('static', filename='safelogo.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='maincss.css') }}">
+</head>
+<body>
+    <header>
+        <a href="/home"><img src="{{ url_for('static', filename='icons/home.png') }}" alt="Home"></a>
+        <a href="/messages"><img src="{{ url_for('static', filename='icons/chat.png') }}" alt="Messages"></a>
+        <img src="{{ url_for('static', filename='safelogo.png') }}" alt="SafeSpace Logo" id="extralogo">
+        <a href="/groups"><img src="{{ url_for('static', filename='icons/group.png') }}" alt="Groups"></a>
+        <a href="/profile/{{username}}"><img src="{{ url_for('static', filename='icons/user.png') }}" alt="Profile"></a>
+    </header>
+
+{% block content %}{% endblock %}
+<!-- <script src="{{ url_for('static', filename='safejs.js') }}"></script> -->
+<!-- <a href="https://www.flaticon.com/free-icons/" title="user icons">Site icons by Freepik - Flaticon</a> -->
+<!-- <a href="https://www.freepik.com/free-vector/" title="user icons">Background by Freepik</a> -->
+</body>
+</html>

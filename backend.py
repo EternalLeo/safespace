@@ -35,6 +35,8 @@ def intro():
             return jsonify({"error": "Missing username."})
         if not password:
             return jsonify({"error": "Missing password."})
+        if len(password) < 8:
+            return jsonify({"error": "Password length below 8"})
         
         if action == "login":
             with app.app_context():
@@ -47,26 +49,42 @@ def intro():
                         # Invalid username
                         return jsonify({"error": "Username does not exist."})
                     else:
-                        passhash = user.password
+                        passhash = user.passhash
                         if check_password_hash(passhash, pepper + password): # Correct, log in
+                            sql = text("SELECT id FROM users WHERE username=:username")
+                            result = db.session.execute(sql, {"username":username})
+                            user = result.fetchone()
+                            if not user:
+                                sql = text("INSERT INTO users (username, permission, displayname) VALUES (:username, 0, 'Anonymoose')")
+                                db.session.execute(sql, {"username":username})
+                                db.session.commit()
                             session["username"] = username
+                            return jsonify({"success": "1"})
                         else:
                             # Invalid password
                             return jsonify({"error": "Password is incorrect."})
         elif action == "signup":
+            sql = text("SELECT id FROM users WHERE username=:username")
+            result = db.session.execute(sql, {"username":username})
+            user = result.fetchone()
+            if user:
+                return jsonify({"error": "Username already exists."}) 
             passhash = generate_password_hash(pepper + password)
+            with app.app_context():
+                engine = db.get_engine('dbauth')
+                with engine.connect() as connection:
+                    sql = text("""
+                        INSERT INTO userauth (username, passhash) 
+                        VALUES (:username, :passhash)
+                        ON CONFLICT (username) 
+                        DO UPDATE SET passhash = :passhash, publickey = NULL, privatekey = NULL
+                        """)
+                    connection.execute(sql, {"username":username, "passhash":passhash})
+                    connection.commit()
             return jsonify({"message": "Signup successful! Now login to verify."})
         else:
             return jsonify({"error": "Missing password."})
 
-
-# This section will be deleted, since the post belongs to the above
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        # tbd. authentication logic
-        pass
-    return render_template("login.html")
 
 # Following section is very much placeholder!
 # In the main site
@@ -76,6 +94,12 @@ def login():
 # (On bottom for mobile)
 # [Navbar] -> Feed, Messages, Groups, Profile
 
+# Header page for debugging - will be removed on a subsequent version
+@app.route("/header")
+def header():
+    return render_template("header.html")
+
+# New landing page once logged in - the home of posts
 @app.route("/home")
 def home():
     return render_template("home.html")

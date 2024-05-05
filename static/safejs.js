@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('result-text').textContent = data.message;
                 } else {
                     // Login
-                    window.location.href = '/success';
+                    window.location.href = '/home';
                 }
                 
             }

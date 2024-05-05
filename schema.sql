@@ -1,20 +1,9 @@
 -- Wow you can comment in sql :D
 
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    username TEXT UNIQUE,
-    permission INTEGER,
-    displayname TEXT,
-    bio TEXT,
-    age INTEGER,
-    pfp BYTEA,
-    created_at TIMESTAMP
-);
-
 -- Auth table, accessible by separate authentication role user
 CREATE TABLE userauth (
     id SERIAL PRIMARY KEY,
-    username TEXT REFERENCES users(username), 
+    username TEXT UNIQUE, 
     passhash TEXT,
     publickey TEXT,
     privatekey TEXT
@@ -28,6 +17,17 @@ CREATE TABLE media (
     id SERIAL PRIMARY KEY,
     media_type TEXT, -- image, video, ...  (maybe in the future) -> html, code, text... - default to download
     media_data BYTEA,
+    created_at TIMESTAMP
+);
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username TEXT REFERENCES userauth(username),
+    permission INTEGER,
+    displayname TEXT,
+    bio TEXT,
+    age INTEGER,
+    pfp BYTEA REFERENCES media(media_data),
     created_at TIMESTAMP
 );
 
