@@ -1,5 +1,9 @@
 <!doctype html>
 <html lang="en">
+{% if session.username %}
+<meta http-equiv="refresh" content="0; url=http://127.0.0.1:5000/home" />
+<p><a href="http://127.0.0.1:5000/home">Redirect</a></p>
+{% else %}
 <head>
     <title>Safespace - be yourself</title>
     <meta charset="UTF-8">
@@ -38,3 +42,4 @@
 <script src="{{ url_for('static', filename='safejs.js') }}"></script>
 </body>
 </html>
+{% endif %}

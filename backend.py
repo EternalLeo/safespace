@@ -1,9 +1,10 @@
 from os import getenv
 from flask import Flask
-from flask import redirect, render_template, request, session, jsonify
+from flask import redirect, render_template, request, session, jsonify, abort, Response, make_response
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 from werkzeug.security import check_password_hash, generate_password_hash
+from secrets import token_hex
 
 # Setting up the environment
 app = Flask(__name__)
@@ -36,7 +37,7 @@ def intro():
         if not password:
             return jsonify({"error": "Missing password."})
         if len(password) < 8:
-            return jsonify({"error": "Password length below 8"})
+            return jsonify({"error": "Password must be longer"})
         
         if action == "login":
             with app.app_context():
@@ -55,10 +56,11 @@ def intro():
                             result = db.session.execute(sql, {"username":username})
                             user = result.fetchone()
                             if not user:
-                                sql = text("INSERT INTO users (username, permission, displayname) VALUES (:username, 0, 'Anonymoose')")
+                                sql = text("INSERT INTO users (username, permission, displayname, created_at) VALUES (:username, 0, 'Anonymoose', NOW())")
                                 db.session.execute(sql, {"username":username})
                                 db.session.commit()
                             session["username"] = username
+                            session["crsf_token"] = token_hex(16)
                             return jsonify({"success": "1"})
                         else:
                             # Invalid password
@@ -86,27 +88,124 @@ def intro():
             return jsonify({"error": "Missing password."})
 
 
-# Following section is very much placeholder!
-# In the main site
-# (On top for PC)
-#
-#
-# (On bottom for mobile)
-# [Navbar] -> Feed, Messages, Groups, Profile
-
-# Header page for debugging - will be removed on a subsequent version
-@app.route("/header")
-def header():
-    return render_template("header.html")
 
 # New landing page once logged in - the home of posts
-@app.route("/home")
+@app.route("/home", methods=["GET", "POST"])
 def home():
-    return render_template("home.html")
+    if not session.get("username"):
+        return render_template("home.html")
+    if request.method == "GET":
+        if request.args.get("query"):
+            lookup = True
+            sql = text("""
+                SELECT users.username, content.id, content.created_at, content.content, COUNT(DISTINCT content_likes.id) AS likes,
+                CASE WHEN COUNT(user_likes.id) > 0 THEN TRUE ELSE FALSE END AS liked
+                FROM content
+                LEFT JOIN users ON users.id = content.user_id
+                LEFT JOIN content_likes ON content_likes.content_id = content.id
+                LEFT JOIN content_likes AS user_likes ON user_likes.content_id = content.id AND user_likes.liker_id = (SELECT id FROM users WHERE username = :username)
+                WHERE content.public = True AND content.category = 'post' AND content.content LIKE :query
+                GROUP BY users.username, content.id
+                """)
+            result = db.session.execute(sql, {"username": session["username"], "query": "%"+request.args.get("query")+"%"})
+        else:
+            lookup = None
+            sql = text("""
+                SELECT users.username, content.id, content.created_at, content.content, COUNT(DISTINCT content_likes.id) AS likes,
+                CASE WHEN COUNT(user_likes.id) > 0 THEN TRUE ELSE FALSE END AS liked
+                FROM content
+                LEFT JOIN users ON users.id = content.user_id
+                LEFT JOIN content_likes ON content_likes.content_id = content.id
+                LEFT JOIN content_likes AS user_likes ON user_likes.content_id = content.id AND user_likes.liker_id = (SELECT id FROM users WHERE username = :username)
+                WHERE content.public = True AND content.category = 'post'
+                GROUP BY users.username, content.id
+                """)
+            result = db.session.execute(sql, {"username": session["username"]})
+        items = result.fetchall()
+        return render_template("home.html", posts=items, search=lookup, query=request.args.get("query"))
+    elif request.method == "POST":
+        print(request.form)
+        if session.get("crsf_token") != request.form.get("crsf_token"):
+            abort(403)
+        action = request.form.get("action")
+        if action == "newpost":
+            content = request.form.get("text")
+            files = request.form.get("files") # Work in progress
+            if len(content) > 1000:
+                return jsonify({"error": "Message too long."})
+            sql = text("""
+                INSERT INTO content (user_id, category, content, public, created_at)
+                VALUES ((SELECT id FROM users WHERE username = :username), 'post', :text, True, NOW())
+                """)
+            db.session.execute(sql, {"username": session["username"], "text":content})
+            db.session.commit()
+            return jsonify({"message": "Successful post."})
+        elif action == "heart":
+            print("WE GOT A HEART")
+            post_id = request.form.get("post_id")
+            if not post_id:
+                abort(400)
+            sql = text("""
+                INSERT INTO content_likes (content_id, liker_id)
+                VALUES (:post_id, (SELECT id FROM users WHERE username = :username))
+                """)
+            db.session.execute(sql, {"username": session["username"], "post_id": post_id})
+            db.session.commit()
+            print("HEARTED")
+            return Response(status=204)
+        elif action == "unheart":
+            post_id = request.form.get("post_id")
+            if not post_id:
+                abort(400)
+            sql = text("""
+                DELETE FROM content_likes 
+                WHERE content_id = :post_id AND liker_id = (SELECT id FROM users WHERE username = :username)
+                """)
+            db.session.execute(sql, {"username": session["username"], "post_id": post_id})
+            db.session.commit()
+            return Response(status=204)
 
-@app.route("/profile/<username>")
+
+
+# Profile page for usernames. Shows different details depending if it's your profile page or not.
+@app.route("/profile/<username>", methods=["GET", "POST"])
 def profile(username):
-    return render_template("profile.html", username=username)
+    if not session.get("username"):
+        return render_template("profile.html")
+    if request.method == "GET":
+        sql = text("""
+            SELECT users.bio, users.displayname, users.created_at, media.id as pfp
+            FROM users
+            LEFT JOIN media ON users.pfp = media.id
+            WHERE users.username=:username
+            """)
+        result = db.session.execute(sql, {"username":username})
+        user = result.fetchone()
+        if not user:
+            return redirect(f"/profile/{session.get('username')}")
+        yourself = None
+        if session.get("username") == username:
+            yourself = True
+        return render_template("profile.html", username=username, bio=user.bio, myself=yourself, name=user.displayname, joined=user.created_at, pfp=user.pfp)
+    elif request.method == "POST":
+        if session.get("crsf_token") != request.form.get("crsf_token"):
+            abort(403)
+        file = request.files["file"]
+        name = file.filename
+        if not name.endswith(".jpg"):
+            return jsonify({"error": "File must be .jpg"})
+        data = file.read()
+        if len(data) > 8000*1024:
+            return jsonify({"error": "Max filesize is 8 Mb."})
+        sql = text("INSERT INTO media (media_type, media_data, created_at) VALUES ('jpg', :data, NOW()) RETURNING id")
+        result = db.session.execute(sql, {"data":data})
+        db.session.commit()
+        media_id = result.fetchone()[0]
+        sql = text("UPDATE users SET pfp = :media_id WHERE username = :username")
+        db.session.execute(sql, {"media_id": media_id, "username": session.get('username')})
+        db.session.commit()
+        return jsonify({"message": "Upload success, refresh page."})
+
 
 @app.route("/messages")
 def dms():
@@ -116,18 +215,22 @@ def dms():
 def groups():
     return render_template("groups.html")
 
+# Link for images (course material)
+@app.route('/image/<id>')
+def show(id):
+    sql = text("SELECT media_data FROM media WHERE id=:id")
+    result = db.session.execute(sql, {"id":id})
+    data = result.fetchone()[0]
+    response = make_response(bytes(data))
+    response.headers.set("Content-Type", "image/jpeg")
+    return response
 
-'''
-[[Dev notes]]
-
-
-[To access the binded db url I can use]
-
-with app.app_context():
-    engine = db.get_engine('dbauth')
-    with engine.connect() as connection:
-        result = connection.execute('SELECT * FROM userauth')
-
-'''
-
+# Log out
+@app.route("/logout")
+def logout():
+    if session.get("username"):
+        del session["username"]
+    if session.get("crsf_token"):
+        del session["crsf_token"]
+    return redirect("/")
 

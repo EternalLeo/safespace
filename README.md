@@ -21,13 +21,14 @@ Requirements:
 - postgresql
 
 >Remember!\
->Enter your own values for "user" (your postgresql username) and "pass" (various password)\
+>Enter your own values for "user" (your postgresql username) and "pass" (various passwords)\
 >Use secure passwords for the safeauth role, pepper, and secret key.
 <br>
 
 Clone the repository, run
   ```terminal
-  cd repo
+  git clone https://github.com/EternalLeo/safespace.git
+  cd safespace
   pip install -r requirements.txt
   psql -U user -c "CREATE DATABASE safedb;"
   psql -U user -d safedb -c "CREATE ROLE safeauth WITH LOGIN PASSWORD 'pass';"
@@ -63,10 +64,10 @@ Run the website with
 🔲 Modern website design\
 🔲 Working authentication\
 🔲 Layout finished\
-⬛ Home feed\
-⬛ Messages\
-⬛ Groups\
-⬛ Profiles
+🔲 Home feed\
+⬛ Messages (informative placeholders)\
+⬛ Groups (potential merge with messages)\
+🔲 Profiles
 
 Long-term goals:\
 ⬛ Full encrypted privacy\

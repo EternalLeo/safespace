@@ -1,0 +1,41 @@
+{% extends "header.html" %}
+{% block title %}Profile{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='pagecss/profile.css') }}">
+{% endblock %}
+{% block content %}
+
+<div class="content-block">
+    <div class="aside">
+    <p>{{ username }}</p>
+    {% if pfp %}
+    <img id="pfp" src="{{ url_for('show', id=pfp) }}" alt="Profile Picture">
+    {% endif %}
+    </div>
+    {% if pfp %}
+    <div class="aside">
+    <img src="{{ url_for('show', id=pfp) }}" alt="Profile Picture">
+    </div>
+    {% endif %}
+    <p>{{ bio }}</p>
+</div>
+
+{% if myself %}
+<div class="content-block">
+    <div class="aside">
+    <p><a href="http://127.0.0.1:5000/logout">Logout</a></p>
+    <p>{{ name }}</p>
+    <p>Joined {{ joined }}</p>
+    </div>
+    <h4>Upload a (currently jpg) profile picture</h4>
+    <form id="pfpform" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <input type="hidden" name="me" value="{{ username }}">
+        <input type="hidden" name="crsf_token" value="{{ session.crsf_token }}">
+        <button>Upload</button>
+    </form>
+    <p id="upload-text"></p>
+</div>
+{% endif %}
+<script src="{{ url_for('static', filename='pagejs/profile.js') }}"></script>
+{% endblock %}

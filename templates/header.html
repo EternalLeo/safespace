@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+{% if session.username %}
 <head>
     <title>Safespace - {% block title %}{% endblock %}</title>
     <meta charset="UTF-8">
@@ -8,15 +9,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{{ url_for('static', filename='safelogo.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='maincss.css') }}">
+    {% block styles %}{% endblock %}
 </head>
 <body>
-    <header>
-        <a href="/home"><img src="{{ url_for('static', filename='icons/home.png') }}" alt="Home"></a>
-        <a href="/messages"><img src="{{ url_for('static', filename='icons/chat.png') }}" alt="Messages"></a>
-        <img src="{{ url_for('static', filename='safelogo.png') }}" alt="SafeSpace Logo" id="extralogo">
-        <a href="/groups"><img src="{{ url_for('static', filename='icons/group.png') }}" alt="Groups"></a>
-        <a href="/profile/{{username}}"><img src="{{ url_for('static', filename='icons/user.png') }}" alt="Profile"></a>
-    </header>
+    <nav>
+        <a href="/home"><img src="{{ url_for('static', filename='icons/home.png') }}" alt="Home">Home</a>
+        <a href="/messages"><img src="{{ url_for('static', filename='icons/chat.png') }}" alt="Messages">Chats</a>
+        <!-- <img src="{{ url_for('static', filename='safelogo.png') }}" alt="SafeSpace Logo" id="extralogo"> -->
+        <a href="/groups"><img src="{{ url_for('static', filename='icons/group.png') }}" alt="Groups">Groups</a>
+        <a href="/profile/{{ session.username }}"><img src="{{ url_for('static', filename='icons/user.png') }}" alt="Profile">Profile</a>
+    </nav>
 
 {% block content %}{% endblock %}
 <!-- <script src="{{ url_for('static', filename='safejs.js') }}"></script> -->
@@ -24,3 +26,7 @@
 <!-- <a href="https://www.freepik.com/free-vector/" title="user icons">Background by Freepik</a> -->
 </body>
 </html>
+{% else %}
+<meta http-equiv="refresh" content="0; url=http://127.0.0.1:5000" />
+<p><a href="http://127.0.0.1:5000">Redirect</a></p>
+{% endif %}

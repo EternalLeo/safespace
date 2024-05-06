@@ -27,7 +27,7 @@ CREATE TABLE users (
     displayname TEXT,
     bio TEXT,
     age INTEGER,
-    pfp BYTEA REFERENCES media(media_data),
+    pfp INTEGER REFERENCES media(id),
     created_at TIMESTAMP
 );
 
@@ -49,27 +49,30 @@ CREATE TABLE content (
     created_at TIMESTAMP
 );
 
+-- unused
 CREATE TABLE content_media (
     id SERIAL PRIMARY KEY,
     content_id INTEGER REFERENCES content(id),
     media_id INTEGER REFERENCES media(id)
 );
 
--- for post limited visibility
+-- for post limited visibility (UNUSED)
 CREATE TABLE content_group (
     id SERIAL PRIMARY KEY,
     content_id INTEGER REFERENCES content(id),
-    user_id INTEGER REFERENCES users(id) -- user who can see the content
+    user_id INTEGER REFERENCES users(id), -- user who can see the content
+    UNIQUE(content_id, user_id)
 );
 
 -- only currently intended available for posts and replies
 CREATE TABLE content_likes (
     id SERIAL PRIMARY KEY,
     content_id INTEGER REFERENCES content(id),
-    liker_id INTEGER REFERENCES users(id)
+    liker_id INTEGER REFERENCES users(id),
+    UNIQUE(content_id, liker_id)
 );
 
--- only currently intended available for posts and replies
+-- planned intended use for posts and replies (UNUSED)
 CREATE TABLE content_reports (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id),
@@ -78,8 +81,7 @@ CREATE TABLE content_reports (
     created_at TIMESTAMP
 );
 
-
-
+-- (UNUSED)
 CREATE TABLE group_members (
     id SERIAL PRIMARY KEY,
     group_id INTEGER REFERENCES groups(id),

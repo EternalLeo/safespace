@@ -1,8 +1,86 @@
 {% extends "header.html" %}
 {% block title %}Home{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='pagecss/home.css') }}">
+{% endblock %}
 {% block content %}
+<img id="timeIcon" src="{{ url_for('static', filename='icons/time.png') }}" style="display: none;">
+<img id="eheartIcon" src="{{ url_for('static', filename='icons/heart.png') }}" style="display: none;">
+<img id="heartIcon" src="{{ url_for('static', filename='icons/heartfull.png') }}" style="display: none;">
 
-<p> HELLO WORLD </p>
-<p> SEARCH BAR </p>
-<p> NEW POST FIELD </p>
+<div class="content-block">
+    <div class="aside">
+        <div class="flexgroup">
+            <h2>SafeSpace Home</h2>
+            <img src="{{ url_for('static', filename='safelogo.png') }}" alt="SafeSpace logo, cat in a box" id="extralogo">
+        </div>
+        <button id="sortbtn" onclick="permadrop()">
+            Sort by
+            <img src="{{ url_for('static', filename='icons/heartfull.png') }}" alt="Clock icon" id="sortimg">
+        </button>
+        <div id="sortmenu">
+            <button onclick="changesort(0)">Time<img src="{{ url_for('static', filename='icons/time.png') }}" alt="Clock icon" id="sortimg"></button>
+            <button onclick="changesort(1)">Hearts<img src="{{ url_for('static', filename='icons/heartfull.png') }}" alt="Heart icon" id="sortimg"></button>
+        </div>
+    </div>
+</div>
+
+<form action="/home" method="GET">
+<div class="content-block search-bar">
+    <input class="avginput" type="text" placeholder="Search..." name="query">
+    <button><img src="{{ url_for('static', filename='icons/search.png') }}" alt="Search"></button>
+</div>
+</form>
+
+<form id="postform" method="POST">
+    <div class="content-block new-post">
+        <textarea id="postinput" class="avginput" type="text" placeholder="New post..." maxlength="1000" minlength="1" name="text"></textarea>
+        <p id="charcount"></p>
+        <div class="aside">
+            <input id="fileInput" type="file" name="files" multiple></input>
+            <label for="fileInput"><img src="{{ url_for('static', filename='icons/folder.png') }}" alt="Add media"></label>
+            <span id="fileName"></span>
+            <input type="hidden" name="action" value="newpost">
+            <input type="hidden" name="crsf_token" value="{{ session.crsf_token }}">
+            <button type="submit"><img src="{{ url_for('static', filename='icons/send.png') }}" alt="Send"></button>
+        </div>
+    </div>
+</form>
+
+{% if search %}
+
+<div class="content-block">
+    <h3>Search results for </h3>
+    <p>{{ query }}</p>
+</div>
+
+{% endif %}
+
+<form id="heartform" method="POST" style="display: none;">
+    <input type="hidden" id="likeact" name="action" value="heart">
+    <input type="hidden" id="heart_id" name="post_id">
+    <input type="hidden" name="crsf_token" value="{{ session.crsf_token }}">
+</form>
+
+{% for post in posts %}
+
+<div class="content-block">
+    <div class="aside">
+    <p>{{ post.username }}</p>
+    <p>{{ post.created_at }}</p>
+    </div>
+    <p>{{ post.content }}</p>
+    <div class="aside">
+    <p></p>
+    {% if post.liked %}
+    <button class="heartbtn" onclick="heart(this.firstChild, {{ post.id }})"><img src="{{ url_for('static', filename='icons/heartfull.png') }}" alt="Heart icon" class="hearts"></button>
+    {% else %}
+    <button class="heartbtn" onclick="heart(this.firstChild, {{ post.id }})"><img src="{{ url_for('static', filename='icons/heart.png') }}" alt="Empty Heart icon" class="hearts"></button>
+    {% endif %}
+    <p id="hearts_{{ post.id }}">{{ post.likes }}</p>
+    </div>
+</div>
+
+{% endfor %}
+<script src="{{ url_for('static', filename='pagejs/home.js') }}"></script>
 {% endblock %}

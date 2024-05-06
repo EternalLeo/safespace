@@ -1,0 +1,71 @@
+{% extends "header.html" %}
+{% block title %}Messages{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='pagecss/messages.css') }}">
+{% endblock %}
+{% block content %}
+
+<div class="content-block">
+    <h3>Current state of site</h3>
+</div>
+
+<div class="content-block">
+    <h4>Authentication and security</h4>
+    <p>Session-based access to site content.</p>
+    <p>Secure registration and login with dynamic error processing.</p>
+    <p>Passwords hashed using modern security standards. (salt+pepper, separate auth role)</p>
+    <p>Protection against SQL injection, Cross-site-scripting (XSS), and CRSF vulnerabilities.</p>
+</div>
+
+<div class="content-block">
+    <h4>Design and look</h4>
+    <p>Hand-crafted css that looks beautiful.</p>
+    <p>Alt text in html elements for accessibility.</p>
+    <p>Supports a variety of devices - mobile view support!</p>
+    <p>(You can try mobile view by resizing or with devtools.)</p>
+</div>
+
+<div class="content-block">
+    <h4>Database</h4>
+    <p>Secure database where authentication details are kept separate from site media.</p>
+    <p>Current database table usage: 5 / 11</p>
+    <p>Modern resilient database features like UNIQUE, REFERENCES, PERMISSIONS.</p>
+    <p>Varied usage - numbers, text, image - from simple conditionals to complex JOINs.</p>
+    <p>Dynamic usage and table joins (just look at this huge one below)</p>
+</div>
+
+<div class="content-block">
+    <pre>SELECT users.username, content.id, content.created_at, content.content, COUNT(DISTINCT content_likes.id) AS likes,
+CASE WHEN COUNT(user_likes.id) > 0 THEN TRUE ELSE FALSE END AS liked
+FROM content
+LEFT JOIN users ON users.id = content.user_id
+LEFT JOIN content_likes ON content_likes.content_id = content.id
+LEFT JOIN content_likes AS user_likes ON user_likes.content_id = content.id AND user_likes.liker_id = (SELECT id FROM users WHERE username = :username)
+WHERE content.public = True AND content.category = 'post'
+GROUP BY users.username, content.id</pre>
+</div>
+
+<div class="content-block">
+    <h4>Features</h4>
+    <p>Authentication and public posts on the home page.</p>
+    <p>Post hearts/like system, counter and tracker. And simple search bar.</p>
+    <p>Profile with uploadable profile picture.</p>
+    <p>Although there's no link, you can visit other profiles through url</p>
+</div>
+
+<div class="content-block">
+    <h3>Unimplemented features</h3>
+</div>
+
+<div class="content-block">
+    <h4>List of features</h4>
+    <p>Post sorting mechanism (although it's a simple ORDER BY).</p>
+    <p>Messages and groups - I might merge chats and groups</p>
+    <p>(In idea, they only differ in the number of people and the latter requires an invite)</p>
+    <p>Customization (ignore invites, themes, etc.).</p>
+    <p>More media support and uploadable media for posts</p>
+    <p>...</p>
+    <p>Fully encrypted?</p>
+</div>
+
+{% endblock %}

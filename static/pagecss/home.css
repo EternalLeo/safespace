@@ -1,0 +1,175 @@
+/* Home page */
+
+form {
+    margin: -10px 0;
+}
+
+.avginput {
+    border: none;
+    padding: 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    min-width: 25vw;
+    border: 2px solid #aeb0b1;
+    background-color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+}
+
+/* Sort bar */
+
+#extralogo {
+    height: 6vh;
+}
+
+#sortimg {
+    height: 2vh;
+}
+
+h2 {
+    margin: 10px;
+}
+
+.flexgroup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#sortbtn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: transparent;
+    color: #000000;
+    border: 2px solid black;
+    border-color: black;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#sortbtn img {
+    margin: 0 0 0 10px;
+}
+
+#sortmenu {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#sortmenu button {
+    display: flex;
+    background-color: whitesmoke;
+    border: 2px solid black;
+    border-color: black;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin: 4px;
+}
+
+#sortmenu button:hover {
+    background-color: #FCB2A8;
+    cursor: pointer;
+}
+
+/* Search bar */
+
+.search-bar {
+    flex-direction: row;
+}
+
+.search-bar input {
+    flex-grow: 1;
+    border-radius: 15px 0 0 15px;
+}
+
+.search-bar button {
+    border: 2px solid rgb(228, 131, 212);
+    border-radius: 0 15px 15px 0;
+    background-color: rgb(255, 176, 242);
+    padding: 6px;
+}
+
+.search-bar button:hover {
+    background-color: rgb(228, 131, 212);
+    cursor: pointer;
+}
+
+.search-bar button img {
+    height: 37px;
+    padding: 0 20px;
+}
+
+
+/* New post */
+.new-post textarea {
+    min-width: 90%;
+    min-height: 25vh;
+    resize: none;
+}
+
+.new-post input {
+    display: none;
+    border: none;
+}
+
+.new-post button {
+    border: none;
+    border-radius: 15px;
+    margin-left: 5px;
+}
+
+.new-post button:hover {
+    background-color: #FCB2A8;
+    cursor: pointer;
+}
+
+.new-post label {
+    background-color: whitesmoke;
+    padding: 0px 10px;
+    border-radius: 15px;
+}
+
+.new-post label:hover {
+    background-color: #FCB2A8;
+    cursor: pointer;
+}
+
+.new-post img {
+    height: 6vh;
+}
+
+/* Posts */
+
+.heartbtn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.hearts {
+    height: 3vh;
+}
+
+/* Mobile support */
+
+@media (orientation: portrait) {
+    .content-block {
+        width: 90%;
+        padding: 5px;
+        margin: 10px auto;
+    }
+
+    /* Sort bar */
+    h2 {
+        font-size: 4vw;
+    }
+
+    #sortbtn {
+        padding: 5px 10px;
+    }
+    
+}
